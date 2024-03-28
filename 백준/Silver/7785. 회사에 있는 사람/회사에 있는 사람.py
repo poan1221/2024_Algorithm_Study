@@ -1,10 +1,10 @@
 n = int(input())
 
-logs = {}
+enter_log = {}
 for _ in range(n):
     name, log = input().split()
-    logs[name] = log
+    enter_log[name] = log
     if log == "leave":
-        del logs[name]
+        del enter_log[name]
    
-for key in sorted(logs,reverse=True): print(key)
+print('\n'.join(sorted(enter_log.keys(),reverse=True)))
