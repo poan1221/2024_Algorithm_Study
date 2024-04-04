@@ -11,13 +11,16 @@ N = int(input())
 heap = [int(input()) for _ in range(N)]
 
 heapify(heap)
-result = 0
+result = 0  # 카드 비교 횟수 초기값
 
 for _ in range(N - 1):
+    # 최소를 2번 빼고
     x = heappop(heap)
     y = heappop(heap)
 
+    # 더한 값을 다시 리스트에 넣어줌
     heappush(heap, x + y)
+    # 몇 번의 비교를 진행하는 지 값을 넣어줌
     result += x + y
 
 print(result)
