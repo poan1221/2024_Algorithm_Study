@@ -1,11 +1,7 @@
-n = input()
-sources = list(map(int, input().split()))
-visited = {}
-
-for source in sources:
-    visited[source] = 1
-
-m = input()
+n = int(input())
+sources = set(map(int, input().split()))  # 중복값이 없도록 set 으로 받기
+m = int(input())
 targets = list(map(int, input().split()))
+
 for target in targets:
-    print(visited.get(target, 0))
+    print(1 if target in sources else 0)
