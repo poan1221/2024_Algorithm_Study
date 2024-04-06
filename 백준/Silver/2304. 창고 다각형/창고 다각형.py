@@ -5,56 +5,52 @@
 import sys
 
 input = sys.stdin.readline
+
+# 스택 구현
+# 가장 높은 기둥을 찾아 일차원 리스트에 추가하는데 인덱스는 가로점으로, 인덱스의 값은 높이로 저장함
+# 0부터 최대 가로길이까지 반복문을 나눠서 돈다. 왼쪽 ~ 최대높이 / 오른쪽 ~ 최대높이 높이를 계속 더해준다.
 n = int(input())
 
-# 기둥을 담은 리스트
-h_list = []
-
-for _ in range(n):
-    l, h = map(int, input().split())
-    h_list.append([l, h])
-
-# 정렬 하기
-h_list.sort()
+info = [
+    0
+] * 1001  # 좌표마다 높이를 넣어줄 배열을 생성. n이 1이상 1000이하이므로 거기에 맞게 만들어줌
+highest = 0  # 기둥의 최대 높이
+h_idx = 0  # 제일 높은 기둥의 인덱스
+end_idx = 0  # 끝 인덱스
 
 # 제일 높은 기둥 찾기
-highest = h_list[0][1]  # 처음 기준
-h_idx = 0
 for i in range(n):
-    # i번째 기둥의 높이가 기준보다 크면
-    if h_list[i][1] > highest:
-        highest = h_list[i][1]  # 제일 높은 기둥 더 큰 값으로 갱신
-        h_idx = i  # 제일 높은 기둥의 인덱스 저장
+    l, h = map(int, input().split())  # 좌표값, 높이
+    info[l] = h  # 가로를 인덱스로, 높이를 값으로
+    if highest < h:
+        highest = h
+        h_idx = l
+    end_idx = max(end_idx, l)  # 마지막 가로 위치 갱신
 
-# 면적 구하기 _ 제일 높은 기둥의 높이를 먼저 면적에 넣어 놓고 시작
-area = 0
-area = highest
+stack = []  # 기둥 높이를 저장할 스택
+result = 0  # 결과값
 
-# 왼 -> 기둥까지
-# 첫 높이
-h = h_list[0][1]
-for i in range(h_idx):
-    # 다음 기둥의 높이가 지금것보다 높으면 다음 기둥까지만 더하면 됨(갱신 필요)
-    if h < h_list[i + 1][1]:
-        # 지금 높이*거리를 면적에 더해줌
-        area += h * (h_list[i + 1][0] - h_list[i][0])
-        # 다음 기둥의 높이로 갱신
-        h = h_list[i + 1][1]
-    else:
-        # 갱신 없이 면적만 더해주기
-        area += h * (h_list[i + 1][0] - h_list[i][0])
+# 첫 인덱스 ~ 제일 높은 기둥까지 넓이를 더해줄 반복문
+for i in range(0, h_idx + 1):
+    if not stack:  # 스택이 비었다면
+        stack.append(info[i])  # 현재 높이를 스택에 넣어줌
+    else:  # 스택이 비어있지 않다면
+        if stack[-1] < info[i]:  # 현재 높이가 스택의 값보다 높다면
+            stack.pop()
+            stack.append(info[i])  # 스택의 높이 갱신
+    result += stack[-1]  # 반복문이 계속될동안 스택에 저장된 높이를 더해준다
 
-# 오 -> 기둥 전까지
-h = h_list[-1][1]
-for i in range(n - 1, h_idx, -1):
-    # 다음 기둥의 높이가 지금것보다 높으면 다음 기둥까지만 더하면 됨(갱신 필요)
-    if h < h_list[i - 1][1]:
-        # 지금 높이*거리를 면적에 더해줌
-        area += h * (h_list[i][0] - h_list[i - 1][0])
-        # 다음 기둥의 높이로 갱신
-        h = h_list[i - 1][1]
-    else:
-        # 갱신 없이 면적만 더해주기
-        area += h * (h_list[i][0] - h_list[i - 1][0])
+# 끝 인덱스 ~ 제일 높은 기둥 직전까지의 넓이를 더해줄 반복문
+stack = []  # 기둥 높이를 저장할 스택
+for j in range(
+    end_idx, h_idx, -1
+):  # 끝 인덱스부터 제일 높은 기둥 직전까지 -1씩 감소하며 반복
+    if not stack:  # 스택이 비었다면
+        stack.append(info[j])  # 현재 높이를 스택에 추가
+    else:  # 스택이 비지 않았다면
+        if stack[-1] < info[j]:  # 현재 높이가 스택의 값보다 높다면
+            stack.pop()
+            stack.append(info[j])  # 스택의 높이 갱신
+    result += stack[-1]  # 반복문이 계속될동안 스택에 저장된 높이 더해줌
 
-print(area)
+print(result)  # 결과값 리턴
