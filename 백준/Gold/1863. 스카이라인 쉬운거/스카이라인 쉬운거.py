@@ -1,29 +1,31 @@
 import sys
 input = sys.stdin.readline
-n = int(input())
 
-stack = []
-cnt = 0
+def find_min_building():
+    stack = []
+    buildings = 0
 
-for _ in range(n):
-    h = int(input().split()[1])
+    for h in skyline:
+        # 스카이라인이 하강하는 지점 처리: 스택이 비어있지 않고, 현재 높이가 스택의 top보다 낮으면
+        while stack and h < stack[-1]:
+            stack.pop()
+            buildings += 1
 
-    # 스택이 있는데, 이전 높이가 지금 높이보다 크면, 스택에서 뺴주고 빌딩 추가
-    while stack and stack[-1] > h:
+        # 스카이라인이 상승하는 지점 또는 같은 높이로 유지되는 경우 스택에 추가
+        # 같은 높이의 연속은 중복 추가를 방지하기 위해 처리하지 않음
+        if not stack or h > stack[-1]:
+            stack.append(h)
+
+    # 스택에 남은 각 상승 지점마다 최소 한 채의 건물이 있음_ 높이가 있는 상황에서만 빌딩 추가
+    while stack:
+        if stack[-1] > 0:
+            buildings += 1
         stack.pop()
-        cnt += 1
 
-    # 스택이 없거나, 있는데 이전과 같은 높이라면 그냥 스택을 쌓기만 함
-    if not stack or (stack and stack[-1] != h):
-        stack.append(h)
+    return buildings
 
-# 아직 남아있는 스택에 대한 건물 추가
-while stack:
-    # 높이가 있어야 하므로
-    if stack[-1] > 0:
-        cnt += 1
-    stack.pop()
 
-# print(stack)
+n = int(input())
+skyline = list(int(input().split()[1]) for _ in range(n))
 
-print(cnt)
+print(find_min_building())
