@@ -1,17 +1,21 @@
-def valid_PS(string):
-    cnt = 0
-    for p in string:
+import sys
+input = sys.stdin.readline
+
+
+def is_vps():
+    stack = []
+    for p in VPS_list:
         if p == "(":
-            cnt += 1
+            stack.append(p)
         elif p == ")":
-            cnt -= 1
-            if cnt < 0:
-                return False
-    return cnt == 0
+            if not stack:
+                return print("NO")
+            stack.pop()
+    return print("YES" if not stack else "NO")
 
 
 n = int(input())
 
 for _ in range(n):
-    PS = input()
-    print("YES" if valid_PS(PS) else "NO")
+    VPS_list = input()
+    is_vps()
