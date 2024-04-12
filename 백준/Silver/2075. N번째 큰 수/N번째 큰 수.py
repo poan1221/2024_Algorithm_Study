@@ -1,24 +1,24 @@
-# N 번째 큰 수? 큰 거 중에... N 번째 작은 수
-# heap 으로 큰 거 넣고 제일 작은 거 빼고는 반복하면 결국 마지막에 남는 N개는 제일 큰 거부터 N개
-# 마지막 남은 것중 최소값이 N번째 큰 수가 됨
-
 import sys
 from heapq import *
 
-N = int(input())
-q = []  # 힙으로 담을 리스트
+input = sys.stdin.readline
 
-for _ in range(N):
-    # 한 줄 씩
-    line = list(map(int, input().split()))
+n = int(input())
 
-    # q 에 없으면 담고, 있으면 비교한다.
-    if not q:
-        for num in line:
-            heappush(q, num)
+queue = []
+# 각 줄마다 확인하기
+for _ in range(n):
+    numbers = list(map(int, input().split()))
+
+    if not queue:
+        # 없으면, 넣어주기
+        for num in numbers:
+            heappush(queue, num)
     else:
-        for num in line:
-            if q[0] < num:  # 최소값보다 현재 숫자 크다? 큰 수로 변경해주기
-                heappush(q, num)  # 넣어주고
-                heappop(q)  # 리스트에서 최소값 빼주고
-print(q[0])
+        for num in numbers:
+            # 이미 있으면, 제일 작은 원소와 비교해서 작은 숫자 삭제하고, 큰 숫자 넣어주기
+            if num > queue[0]:
+                heappushpop(queue, num)  # push, pop 한번에
+
+# 남은 queue는 최종적으로 큰 숫자들 n개_ n번째 큰 수는 그 중 가장 작은 수
+print(queue[0])
